@@ -2,7 +2,8 @@
 A system which would be able to handle long-running processes in a distributed fashion
 
 # Problem Statement
-We need to be able to import products from a CSV file and into a database. There are half a million products to be imported into the database. You can find the CSV file here in a compressed format Large File processing - Assignment. Sample rows
+We need to be able to import products from a CSV file and into a database. There are half a million products to be imported into the database. You can find the CSV file [here](https://drive.google.com/drive/folders/1X3qomdbjWU1oOTbBvxchTzjLMAwYBWFT) in a compressed format Large File processing - Assignment. 
+Sample rows
 | Name  | Sku | Description |
 | ------------- | ------------- | ------------- |
 | Bryce Jones  | lay-raise-best-end  | Art community floor adult your single type  |
@@ -52,7 +53,7 @@ Language dependent
 ```
 ### Download data csv
 ```bash
-python download_csv_dummy_data.py
+python download_dummy_csv_data.py
 ```
 
 ## Conclusion
