@@ -11,7 +11,7 @@ We need to be able to import products from a CSV file and into a database. There
 After importing the data, we would like to run an aggregate query to give us no. of products with the same name.
 
 ## Points to achieve
-* Your code should follow concept of OOPS
+* The code should follow concept of OOPS
 * Support for regular non-blocking parallel ingestion of the given file into a table. Consider thinking about the scale of what should happen if the file is to be processed in 2 mins.
 * Support for updating existing products in the table based on `sku` as the primary key. 
 * All 500k rows to be inserted into a single table
@@ -59,4 +59,4 @@ python download_csv_dummy_data.py
 Project Just got initiated!!
 
 ## Author
-* [Zaid Khan](http://tooschoolforcool.xyz/) ([@SounakDey](https://github.com/ZaidRazaKhan))
+* [Zaid Khan](http://tooschoolforcool.xyz/) ([@ZaidRazaKhan](https://github.com/ZaidRazaKhan))
