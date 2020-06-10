@@ -2,6 +2,7 @@ import mysql.connector
 from mysql.connector import Error
 from pyspark.sql import SparkSession
 from pyspark import SparkContext
+# import MySQLdb
 
 spark = SparkSession.builder.appName("ProductRegistrar") \
             .config("spark.some.config.option", "some-value") \
@@ -45,34 +46,37 @@ spark = SparkSession.builder.appName("ProductRegistrar") \
 
 def save_batch(batch):
     batch.foreach
-def save_partition(partitions):
+def save_partition(partition):
     # connection_properties = broadcast_connection_parameter.value
     connection = mysql.connector.connect(host='localhost',\
         database='ProductDatabase', \
             user='zaid', \
-                password='algorithm', connection_timeout= 180)
+                password='algorithm')
+    # , connection_timeout= 180
     # , autocommit = True
-    # connection.autocommit(True)
-    # connection.autocommit()
-    # connection.start_
     cursor = connection.cursor()
     db_batch_size = 10000
-    sql_statement = """INSERT INTO ProductTable (name, sku, description) VALUES (%(name)s, %(sku)s, %(description)s) ON DUPLICATE KEY UPDATE name = %(name)s, description = %(description)s ;"""
-    # print(sql_statement.format("a", "b", "c", "d", "e", "f"))
-    # print(sql_statement.format("z", "x", "y", "w", "v", "w"))
+    sql_statement = """INSERT INTO ProductTable (name, sku, description) 
+    VALUES ( %(name)s, %(sku)s, %(description)s ) 
+    ON DUPLICATE KEY UPDATE
+    name = VALUES(name), 
+    description = VALUES(description) ;"""
+    # sql_statement = """INSERT INTO ProductTable (name, sku, description) 
+    # VALUES ( %(name)s, %(sku)s, %(description)s ) 
+    # ON DUPLICATE KEY UPDATE
+    # name = %(name)s, 
+    # description = %(description)s ;"""
+    data_to_insert = []
     i = 0
-    # data_to_insert = []
-    
-    for row in partitions:
+    for row in partition:
         try:
-            # data_to_insert.append({'name':row.name, 'sku' : row.sku, 'description' : row.description})
+            data_to_insert.append({'name':row.name, 'sku' : row.sku, 'description' : row.description})
             # cursor.execute(sql_statement, (row.name, row.sku, row.description, row.name, row.description))
-            cursor.execute(sql_statement, {'name':row.name, 'sku' : row.sku, 'description' : row.description})
+            # cursor.execute(sql_statement, {'name':row.name, 'sku' : row.sku, 'description' : row.description})
             i = i+1
             if i % db_batch_size == 0:
-                pass
-            #    cursor.executemany(sql_statement, data_to_insert, batcherrors=True)  
-            #    data_to_insert.clear() 
+               cursor.executemany(sql_statement, data_to_insert)  
+               data_to_insert.clear()
         except mysql.connector.Error as err:
             print(err)
             print("Error Code:", err.errno)
@@ -81,7 +85,8 @@ def save_partition(partitions):
         # finally:
         #     print("kuch bhi")
         #     # data_to_insert.clear()
-    # cursor.executemany(sql_statement, data_to_insert, batcherrors=True)
+    if len(data_to_insert) > 0:
+        cursor.executemany(sql_statement, data_to_insert)
     connection.commit()
     cursor.close()
     connection.close()
@@ -96,10 +101,14 @@ def update():
     jdbc_url = 'jdbc:mysql://localhost:3306/ProductDatabase'
     jdbc_driver = 'com.mysql.cj.jdbc.Driver'
     db_name = "ProductDatabase"
-    connection_properties = {"user": user, "password": password, \
-        "jdbcUrl": jdbc_url, "jdbcDriver": jdbc_driver, "dbname": db_name}
+    # connection_properties = {"user": user, "password": password, \
+    #     "jdbcUrl": jdbc_url, "jdbcDriver": jdbc_driver, "dbname": db_name}
     # broadcast_connection_parameter = spark_context.broadcast(connection_properties)
     spark_dataframe.coalesce(10).foreachPartition(save_partition)
 
 
 update()
+
+
+# jdbc_dataframe = spark.read.format('jdbc').option("url", "jdbc:mysql://localhost:3306/ProductDatabase").option("dbtable", "ProductTable").option("user", "zaid").option("password", "algorithm").load()
+# print(jdbc_dataframe.groupBy("name").count().show(20))
