@@ -1,4 +1,4 @@
-    from pyspark.sql import SparkSession
+from pyspark.sql import SparkSession
 from ProductRegistrar import ProductRegistrar
 
 
@@ -10,18 +10,18 @@ class ProductDataIngestionManager:
     3. Aggregation Update
     """
 
-    def __init__(self, file_path, file_format='csv', column_sep=',', line_delimiter='\r'):
+    def __init__(self, product_registrar):
         self.spark_session = SparkSession.builder.appName("ProductRegistrar") \
-            .config("spark.some.config.option", "some-value") \
             .getOrCreate()
-        self.product_data_frame = self.spark_session.read \
+            # .config("spark.some.config.option", "some-value") \
+        self.product_registrar = product_registrar
+
+    def ingest(self, file_path, file_format='csv', column_sep=',', line_delimiter='\r'):
+        product_data_frame = self.spark_session.read \
             .load(file_path, format=file_format,
                   sep=column_sep, lineSep=line_delimiter,
                   engine='c', multiLine=True, header=True).withColumnRenamed('description\r', 'description')
-        self.product_registrar = ProductRegistrar(self.product_data_frame)
-
-    def ingest(self):
-        self.product_registrar.register_product_table()
+        self.product_registrar.register_product_table(product_data_frame)
 
     def aggregation_update(self):
         pass
