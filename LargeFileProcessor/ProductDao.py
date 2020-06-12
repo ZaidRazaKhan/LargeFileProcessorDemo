@@ -1,13 +1,7 @@
 import mysql.connector
-
 import config as database_config
 
 
-def get_connection():
-    return mysql.connector.connect(host=database_config.mysql["host"],
-                                   database=database_config.mysql["db_name"],
-                                   user=database_config.mysql["user"],
-                                   password=database_config.mysql["password"])
 
 
 def get_upsert_sql_statement():
@@ -22,6 +16,16 @@ class ProductDao:
     def __init__(self, batch_size=10000, number_of_partitions=10):
         self.batch_size = batch_size
         self.number_of_partitions = number_of_partitions
+        self.host=database_config.mysql["host"]
+        self.database=database_config.mysql["db_name"]
+        self.user=database_config.mysql["user"]
+        self.password=database_config.mysql["password"]
+
+    def get_connection(self):
+        return mysql.connector.connect(host=self.host,
+                                    database=self.database,
+                                    user=self.user,
+                                    password=self.password)
 
     def update_and_insert(self, spark_data_frame):
         """
@@ -31,12 +35,10 @@ class ProductDao:
         print(a.rdd.getNumPartitions())
         a.show()
         a.foreachPartition(self.save_partition)
-        # a.foreachPartition(lambda partition : print("inside lambda"))
-        print("OK doen")
 
     def save_partition(self, partition):
         print(partition)
-        connection = get_connection()
+        connection = self.get_connection()
         cursor = connection.cursor()
         sql_statement = get_upsert_sql_statement()
         data_to_insert = []
