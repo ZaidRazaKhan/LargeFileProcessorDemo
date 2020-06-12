@@ -1,16 +1,21 @@
 How to run
 go to the Main directory
 run : 
-    make build; 
-    make clean; 
-    make setup; 
-        You will have to change the ip and gdrive id in the test of the Driver.py file line #14-#15
-        You can get it by running below command in the terminal :
-        docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' ProductDBServer
+1. make build; 
+2. make clean; 
+3. make setup; 
+
+
+
+You will/may have to change the ip and gdrive id in the test of the Driver.py file line #14-#15
+You can get it by running below command in the terminal :
+
+1. docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' ProductDBServer
+
 Now run :
-    docker build -t large-file-processor-image:1 ./LargeFileProcessor
-    docker run -it  large-file-processor-image:1 ; 
-    make test;
+1. docker build -t large-file-processor-image:1 ./LargeFileProcessor
+2. docker run -it  large-file-processor-image:1 ; 
+3. make test;
 
 
 Over all structure
