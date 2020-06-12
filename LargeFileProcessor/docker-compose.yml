@@ -1,0 +1,8 @@
+version: '3.4'
+
+services:
+  mydockerattempt1:
+    image: mydockerattempt1
+    build:
+      context: .
+      dockerfile: Dockerfile
