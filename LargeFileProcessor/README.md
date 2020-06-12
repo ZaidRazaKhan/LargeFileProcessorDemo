@@ -7,7 +7,7 @@ run :
 
 
 
-You will/may have to change the ip and gdrive id in the test of the Driver.py file line #14-#15
+You will/may have to change the ip and gdrive id in the test of the driver.py file line #31-#32
 You can get it by running below command in the terminal :
 
 1. docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' ProductDBServer
