@@ -22,11 +22,7 @@ setup:
 	docker exec -it ProductDBServer mysql -uroot -palgorithm1 -e "CREATE OR REPLACE VIEW ProductDatabase.ProductAggregate as select name, count(name) from ProductDatabase.ProductTable GROUP BY name;"
 
 test:
-	# cd LargeFileProcessor
-	# product_database_ip=$$(sudo docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' ProductDBServer)
-	# echo $$product_database_ip
-	# docker run -it  large-file-processor-image:1 
 	docker exec -it ProductDBServer mysql -uroot -palgorithm1 -e "select * from ProductDatabase.ProductTable;"
 	docker exec -it ProductDBServer mysql -uroot -palgorithm1 -e "select * from ProductDatabase.ProductAggregate;"
-	# docker run -it  large-file-processor-image:1 <fileName>
+
 
