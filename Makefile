@@ -25,7 +25,7 @@ test:
 	# cd LargeFileProcessor
 	# product_database_ip=$$(sudo docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' ProductDBServer)
 	# echo $$product_database_ip
-	docker run -it  large-file-processor-image:1 -e PRODUCT_DB_IP=172.17.0.2 -e PRODUCT_FILE_ID=11ACp03VCQY5NElctMq7F5zn23jKrqTZI
+	# docker run -it  large-file-processor-image:1 
 	docker exec -it ProductDBServer mysql -uroot -palgorithm1 -e "select * from ProductDatabase.ProductTable;"
 	docker exec -it ProductDBServer mysql -uroot -palgorithm1 -e "select * from ProductDatabase.ProductAggregate;"
 	# docker run -it  large-file-processor-image:1 <fileName>

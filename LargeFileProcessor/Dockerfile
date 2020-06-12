@@ -80,4 +80,4 @@ RUN useradd appuser && chown -R appuser /app
 USER appuser
 
 # During debugging, this entry point will be overridden. For more information, please refer to https://aka.ms/vscode-docker-python-debug
-CMD ["python3", "driver.py ${PRODUCT_DB_IP} ${PRODUCT_FILE_ID}"]
+CMD ["python3", "driver.py"]
