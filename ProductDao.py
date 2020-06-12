@@ -1,42 +1,55 @@
-#!/usr/bin/env python
-from pyspark.sql import SparkSession
-from pyspark import SparkContext
-
+import mysql.connector
 
 import config as database_config
 
-# connect(cfg.mysql["host"], cfg.mysql["user"], cfg.mysql["password"])
-class ProductDao():
-    def __init__(self, config):
-        print('DataManupilotor object is created')
-        self.spark = SparkSession.builder.appName("ProductRegistrar") \
-            .config("spark.some.config.option", "some-value") \
-                .getOrCreate()
-        self.config = config
-        self.jdbc_dataframe = self.spark.read.format('jdbc') \
-            .option("url", "jdbc:mysql://localhost:3306/ProductDatabase") \
-                .option("dbtable", "ProductDatabase.ProductTable") \
-                    .option("user", "zaid") \
-                        .option("password", "algorithm")
-        
-    
 
-    def update(self, config, spark_dataframe , partition_size = 10, batch_size = 100):
-        '''
-        Method to perform upsert operation
-        '''
-        raise Exception("Yet to be implemented!!")
-        spark_dataframe = self.spark.read.load("./products.csv", \
-        format="csv",sep=",",lineSep="\r", engine="c", multiLine=True, \
-             header = True)
-        user = 'zaid'
-        password = 'algorithm'
-        jdbc_url = 'jdbc:mysql://localhost:3306/ProductDatabase'
-        jdbc_driver = 'com.mysql.cj.jdbc.Driver'
-        db_name = "ProductDatabase"
-        spark_context = SparkContext()
-        connection_properties = {"user": user, "password": password, \
-            "jdbcUrl": jdbc_url, "jdbcDriver": jdbc_driver, "dbname": db_name}
-        broadcast_connection_parameter = spark_context.broadcast(connection_properties)
-        
-        
+def get_connection():
+    return mysql.connector.connect(host=database_config.mysql["host"],
+                                   database=database_config.mysql["db_name"],
+                                   user=database_config.mysql["user"],
+                                   password=database_config.mysql["password"])
+
+
+def get_upsert_sql_statement():
+    return"""INSERT INTO ProductTable (name, sku, description) 
+    VALUES ( %(name)s, %(sku)s, %(description)s ) 
+    ON DUPLICATE KEY UPDATE
+    name = VALUES(name), 
+    description = VALUES(description) ;"""
+
+
+class ProductDao:
+    def __init__(self, batch_size=10000, number_of_partitions=10):
+        self.batch_size = batch_size
+        self.number_of_partitions = number_of_partitions
+
+    def update_and_insert(self, spark_data_frame):
+        """
+        Method to perform update and insert operation on product db
+        # """
+        spark_data_frame.coalesce(self.number_of_partitions).foreachPartition(self.save_partition)
+
+    def save_partition(self, partition):
+        connection = get_connection()
+        cursor = connection.cursor()
+        sql_statement = get_upsert_sql_statement()
+        data_to_insert = []
+        i = 0
+        print('for loop se pehle')
+        for row in partition:
+            try:
+                data_to_insert.append({'name': row.name, 'sku': row.sku, 'description': row.description})
+                i = i + 1
+                if i % self.batch_size == 0:
+                    cursor.executemany(sql_statement, data_to_insert)
+                    data_to_insert.clear()
+            except mysql.connector.Error as err:
+                print(err)
+                print("Error Code:", err.errno)
+                print("SQLSTATE", err.sqlstate)
+                print("Message", err.msg)
+        if len(data_to_insert) > 0:
+            cursor.executemany(sql_statement, data_to_insert)
+        connection.commit()
+        cursor.close()
+        connection.close()
