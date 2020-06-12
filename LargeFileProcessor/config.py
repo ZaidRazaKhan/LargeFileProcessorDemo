@@ -1,5 +1,3 @@
-import preprocessing
-
 mysql = {
     "jdbc_url" : "jdbc:mysql://ProductDBServer:3306/ProductDatabase",
     "jdbc_driver" : "com.mysql.cj.jdbc.Driver",

@@ -4,6 +4,8 @@ FROM openjdk:8
 ENV PYTHON_VERSION=3.7.3
 ENV PYSPARK_PYTHON=python3
 ENV PYSPARK_DRIVER_PYTHON=python3
+ENV PRODUCT_DB_IP 'localhost'
+ENV PRODUCT_FILE_ID '' 
 
 # Keeps Python from generating .pyc files in the container
 ENV PYTHONDONTWRITEBYTECODE 1
@@ -78,4 +80,4 @@ RUN useradd appuser && chown -R appuser /app
 USER appuser
 
 # During debugging, this entry point will be overridden. For more information, please refer to https://aka.ms/vscode-docker-python-debug
-CMD ["python3", "driver.py"]
+CMD ["python3", "driver.py ${PRODUCT_DB_IP} ${PRODUCT_FILE_ID}"]
