@@ -8,6 +8,7 @@ run :
         You can get it by running below command in the terminal :
         docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' ProductDBServer
 Now run :
+    docker build -t large-file-processor-image:1 ./LargeFileProcessor
     docker run -it  large-file-processor-image:1 ; 
     make test;
 
