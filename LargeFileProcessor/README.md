@@ -59,37 +59,37 @@ docker run -it  large-file-processor-image:1 ;
 make test;
 ```
 
-Over all structure
-Note : This just gives a rough representation of my thought process and will be helpful in understanding the overall thing. However it will map broadly with the code but may not map exactly.
+## Over all structure
+**Note : This just gives a rough representation of my thought process and will be helpful in understanding the overall thing. However it will map broadly with the code but may not map exactly.**
 
-Current Architecture and Implementation
-System level Components
-A. There is a mysql DB server backed by docker which hosts the ProductDatabase, having a mysql table ProductTable and a mysql view ProductAggregation which is an aggregation over ProductTable on the Names column.
-B. There is another component, LargeFileProcessor which is currently vended as a docker which spins up every time we have a product data file to be ingested.
-C. There is a MakeFile demo script which has targets to :
-1. Spin up mysql db docker.
-2. Create the users, grant permissions, create Product data base , ProductTable inside it and a ProductAggregation view on top of it.
-3. Spin up LargeFileProcessor, which takes the Product csv file as an input and processes it.
-4. Prints the state of the ProductTable and ProductAggregation for testing.
+### Current Architecture and Implementation
+###### System level Components
+1. There is a mysql DB server backed by docker which hosts the ProductDatabase, having a mysql table ProductTable and a mysql view ProductAggregation which is an aggregation over ProductTable on the Names column.
+2. There is another component, LargeFileProcessor which is currently vended as a docker which spins up every time we have a product data file to be ingested.
+3. There is a MakeFile demo script which has targets to :
+- Spin up mysql db docker.
+- Create the users, grant permissions, create Product data base , ProductTable inside it and a ProductAggregation view on top of it.
+- Spin up LargeFileProcessor, which takes the Product csv file as an input and processes it.
+- Prints the state of the ProductTable and ProductAggregation for testing.
 
-Actors
+## Actors
 LargeFileProcessor can have 3 components :
 1. Product data registrar : takes a spark data frame and processes it into the
 2. Product Data ingestion manager : reads the file into spark data frame, provides decoupling for registrar so that it can be used with any source without any change in it.
 2. Product data aggregator and its manager : is vestigial as of now because the mysql view is already handling it in this implementation.
 3. Driver : An orchestrator wrapping these. Gets the call, downloads the csv file and initialized the components and orchestrates the ingestion flows.
 
-Use cases
+## Use cases
 1. Files can be parallelly ingested.
 2. LargeFileProcessor is only dependednt on the ip of the DBServer, so it is totally decoupled with the DB implementaton, for scaling master slave can be done on DB Server without any changes on the LargeFileProcessor.
 3. LargeFileProcessor takes ulr of the zipped csv file.
 
-Flow
+## Flow
 1. Driver receives the data base ip and uses it to ini`
 1. Driver initializes the DB accessing, Product Registrar, Product Data ingestion manager etc.
 2. Calls the
 
-Future use cases / Improvements
+## Future use cases / Improvements
 1. Handling fault tolerance where the LargeFileProcessor goes down in between the ingestion, introduce idempotence and retry mechanism to handle it.
 2. Running LargeFileProcessor backed by swarm or Kubernetes having an upper cap as DB will be a bottle neck.
 3. ProductAggregate is backed by mysql, but with data increasing, we will have to move it to big data or other solutions.
@@ -97,7 +97,7 @@ Future use cases / Improvements
 5. Handling partial failures of Product Ingestion flow, Product Aggregation Flow etc.
 6. Exhaustive validation and checks.
 
-PS : Due to the time constraints it did not made much sense to implement the above mentioned ones into the MVP, however I do have the full solution for the above mentioned points.
+**PS : Due to the time constraints it did not made much sense to implement the above mentioned ones into the MVP, however I do have the full solution for the above mentioned points.**
 
 
 
