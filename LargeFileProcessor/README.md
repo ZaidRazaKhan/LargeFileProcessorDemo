@@ -1,22 +1,65 @@
-How to run
-go to the Main directory
-run : 
+# LargeFileProcessor
+A system which would be able to handle long-running processes in a distributed fashion
+
+# Problem Statement
+We need to be able to import products from a CSV file and into a database. There are half a million products to be imported into the database. You can find the CSV file [here](https://drive.google.com/drive/folders/1X3qomdbjWU1oOTbBvxchTzjLMAwYBWFT) in a compressed format Large File processing - Assignment. 
+Sample rows
+| Name  | Sku | Description |
+| ------------- | ------------- | ------------- |
+| Bryce Jones  | lay-raise-best-end  | Art community floor adult your single type  |
+| John Robinson  | cup-return-guess  | Produce successful hot tree past action young  |
+
+After importing the data, we would like to run an aggregate query to give us no. of products with the same name.
+
+
+## Points to achieve
+* The code should follow concept of OOPS
+* Support for regular non-blocking parallel ingestion of the given file into a table. Consider thinking about the scale of what should happen if the file is to be processed in 2 mins.
+* Support for updating existing products in the table based on `sku` as the primary key. 
+* All 500k rows to be inserted into a single table
+* An aggregated table on above rows with `name` and `no. of products` as the columns
+
+## Notes
+* You can choose programming language and framework of your choice
+* You can choose a database of your preference
+* You can use any design pattern you prefer to solve the above problems
+
+## Getting Started
+
+### Introduction 
+### Installation
+* Clone this repository
+```bash
+git clone https://github.com/ZaidRazaKhan/LargeFileProcessorDemo.git
+cd LargeFileProcessorDemo/LargeFileProcessor
+```
+* Install Docker
+```bash
+sudo apt-get install update
+sudo apt-get remove docker docker-engine docker.io
+sudo apt install docker.io
+sudo systemctl start docker
+sudo systemctl enable docker
+```
+### Steps to run code
+```bash
 1. make build; 
 2. make clean; 
 3. make setup; 
+```
 
-
-
-You will/may have to change the ip and gdrive id in the test of the driver.py file line #31-#32
+*You will/may have to change the ip and gdrive id in the test of the driver.py file line #31-#32
 You can get it by running below command in the terminal :
 
 1. docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' ProductDBServer
+*
 
-Now run :
-1. docker build -t large-file-processor-image:1 ./LargeFileProcessor
-2. docker run -it  large-file-processor-image:1 ; 
-3. make test;
-
+* Now run :
+```bash
+docker build -t large-file-processor-image:1 ./LargeFileProcessor
+docker run -it  large-file-processor-image:1 ; 
+make test;
+```
 
 Over all structure
 Note : This just gives a rough representation of my thought process and will be helpful in understanding the overall thing. However it will map broadly with the code but may not map exactly.
@@ -67,8 +110,7 @@ PS : Due to the time constraints it did not made much sense to implement the abo
 
 
 
-# LargeFileProcessor
-A system which would be able to handle long-running processes in a distributed fashion
+
 
 # Problem Statement
 We need to be able to import products from a CSV file and into a database. There are half a million products to be imported into the database. You can find the CSV file [here](https://drive.google.com/drive/folders/1X3qomdbjWU1oOTbBvxchTzjLMAwYBWFT) in a compressed format Large File processing - Assignment. 
