@@ -48,11 +48,9 @@ sudo systemctl enable docker
 3. make setup; 
 ```
 
-*You will/may have to change the ip and gdrive id in the test of the driver.py file line #31-#32
-You can get it by running below command in the terminal :
-
-1. docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' ProductDBServer
-*
+> You will/may have to change the ip and gdrive id in the test of the driver.py file line #31-#32
+>You can get it by running below command in the terminal :
+> docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' ProductDBServer
 
 * Now run :
 ```bash
