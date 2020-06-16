@@ -29,35 +29,17 @@ After importing the data, we would like to run an aggregate query to give us no.
 ### Introduction 
 
 ### Steps to run code
-Will be updated later!!
+Look inside the readme updated inside largeFileProcessor folder
 
-### Schemas and details for table generation
-Will be updated later!!
-
-### Points achieved
-* None
 
 ### Future Improvements
-Implementation of the above problem statement
-
+Inside the folder LargeFileProcessor's readme
 
 ### Installation
-* Clone this repository
-```bash
-git clone https://github.com/ZaidRazaKhan/LargeFileProcessor.git
-cd LargeFileProcessor
-```
-* Install the requirements (not checked)
-```bash
-Language dependent
-```
-### Download data csv
-```bash
-python download_dummy_csv_data.py
-```
+Look inside readme
 
 ## Conclusion
-Project Just got initiated!!
+Phase 1 is delievered!!
 
 ## Author
 * [Zaid Khan](http://tooschoolforcool.xyz/) ([@ZaidRazaKhan](https://github.com/ZaidRazaKhan))
